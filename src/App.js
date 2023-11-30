@@ -1,5 +1,3 @@
-// App.js
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -8,9 +6,11 @@ import StudentData from '../src/components/StudentData';
 import Sem4 from '../src/components/Sem4';
 import View from '../src/components/View';
 import PdfExport from '../src/components/PdfExport';
+import Login from '../src/components/Login';
 
 const App = () => {
   const [studentData, setStudentData] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     // Fetch data from Google Sheets or set a mock data
@@ -23,17 +23,26 @@ const App = () => {
     // setStudentData(mockData);
   }, []);
 
+  const handleLogin = (user) => {
+    setUser(user);
+  };
+
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/student-data" element={<StudentData />} />
-        <Route path="/student-data/sem4" element={<Sem4 />} />
-        <Route path="/student-data/sem4/view" element={<View studentData={studentData} />} />
-        <Route
-          path="/student-data/sem4/pdf-export"
-          element={<PdfExport selectedStudents={[]} studentData={studentData} />}
-        />      </Routes>
+      {user ? (
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/student-data" element={<StudentData />} />
+          <Route path="/student-data/sem4" element={<Sem4 />} />
+          <Route path="/student-data/sem4/view" element={<View studentData={studentData} />} />
+          <Route
+            path="/student-data/sem4/pdf-export"
+            element={<PdfExport selectedStudents={[]} studentData={studentData} />}
+          />
+        </Routes>
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
     </Router>
   );
 };
